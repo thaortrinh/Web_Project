@@ -37,7 +37,7 @@ const Contact = () => {
     {
       name: "Boi Ngoc",
       role: "Business Analyst & Frontend Developer",
-      email: "ITCSIU------@student.hcmiu.edu.vn",
+      email: "ITCSIU22312@student.hcmiu.edu.vn",
     },
   ];
 
@@ -173,9 +173,9 @@ const Contact = () => {
             <h3 className="text-2xl font-bold !mb-4">
               International University - VNU HCMC
             </h3>
-            <p className="text-white/90 max-w-3xl !mx-auto !mb-6">
+            <p className="text-white/90 text-sm w-full max-w-[90%] md:max-w-[80%] lg:max-w-[75%] !mx-auto !mb-6">
               We are students at the International University, part of Vietnam
-              National University Ho Chi Minh City. TaskUP is our capstone
+              National University Ho Chi Minh City. <br /> TaskUP is our capstone
               project, designed to revolutionize task management and team
               collaboration.
             </p>

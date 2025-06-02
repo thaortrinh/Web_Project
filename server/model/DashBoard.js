@@ -5,7 +5,7 @@ function mapState(state) {
     case 1:
       return "TODO";
     case 2:
-      return "IN-PROGRESS"; 
+      return "IN-PROGRESS";
     case 3:
       return "COMPLETED";
     default:
@@ -49,78 +49,54 @@ class DashBoard {
 
   static getForBoard(workspaceId, callback) {
     const taskQuery = `
-      SELECT
-        t.TaskId,
-        t.taskname,
-        t.priority,
-        t.dateBegin,
-        t.dateEnd,
-        t.StateCompletion,
-        t.description AS taskDescription,
-        u.userId AS assignedUserId,
-        u.photoPath AS photo,
-        u.name AS assignedUserName,
-        u.email AS assignedUserEmail,
-        jw.isManager,
-        jw.role,
-        jw.dateJoin,
-        jw.joinWorkSpace as joiny
-      FROM Task t
-      JOIN AssignTask at ON t.TaskId = at.TaskId
-      JOIN joinWorkSpace jw ON at.joinWorkSpace = jw.joinWorkSpace
-      JOIN User u ON jw.userId = u.userId
-      WHERE t.WorkSpace = ?  AND t.trash = FALSE;
-    `;
+    SELECT
+      t.TaskId,
+      t.taskname,
+      t.priority,
+      t.dateBegin,
+      t.dateEnd,
+      t.StateCompletion,
+      t.description AS taskDescription,
+      u.userId AS assignedUserId,
+      u.photoPath AS photo,
+      u.name AS assignedUserName,
+      u.email AS assignedUserEmail,
+      jw.isManager,
+      jw.role,
+      jw.dateJoin,
+      jw.joinWorkSpace as joiny
+    FROM Task t
+    LEFT JOIN AssignTask at ON t.TaskId = at.TaskId
+    LEFT JOIN joinWorkSpace jw ON at.joinWorkSpace = jw.joinWorkSpace
+    LEFT JOIN User u ON jw.userId = u.userId
+    WHERE t.WorkSpace = ? AND t.trash = FALSE;
+  `;
 
     const memberQuery = `
-      SELECT u.userId, u.name, u.email, j.role, j.isManager, j.isPending, j.dateJoin, j.joinWorkSpace, u.photoPath
-      FROM joinWorkSpace j
-      JOIN User u ON j.userId = u.userId
-      WHERE j.WorkSpace = ?;
-    `;
+    SELECT u.userId, u.name, u.email, j.role, j.isManager, j.isPending, j.dateJoin, j.joinWorkSpace, u.photoPath
+    FROM joinWorkSpace j
+    JOIN User u ON j.userId = u.userId
+    WHERE j.WorkSpace = ?;
+  `;
 
     pool.query(taskQuery, [workspaceId], (err, taskResult) => {
       if (err) {
         console.error("Error fetching tasks for workspace:", err);
         return callback(err, null);
       }
+
       pool.query(memberQuery, [workspaceId], (memberErr, memberResult) => {
         if (memberErr) {
           console.error("Error fetching members for workspace:", memberErr);
           return callback(memberErr, null);
         }
+
         const tasksMap = new Map();
+
         taskResult.forEach((row) => {
           const taskId = row.TaskId;
-          const initials = row.assignedUserName
-            .split(" ")
-            .map((n) => n[0])
-            .join("")
-            .toUpperCase();
 
-          const bgColorOptions = [
-            "bg-blue-700",
-            "bg-orange-500",
-            "bg-purple-600",
-            "bg-green-600",
-            "bg-red-600",
-          ];
-          const bgColor =
-            bgColorOptions[row.assignedUserId % bgColorOptions.length];
-          let photoLink = null;
-          if (row.photo) {
-            photoLink = `https://kdjkcdkapjgimrnugono.supabase.co/storage/v1/object/public/images/${row.photo}`;
-          }
-          const user = {
-            id: row.assignedUserId,
-            name: row.assignedUserName,
-            email: row.assignedUserEmail,
-            photoPath: photoLink,
-            joinId: row.joiny,
-            initials,
-            bgColor,
-          };
-          // console.log (mapPriority[row.priority]);
+          // Create task if not exists
           if (!tasksMap.has(taskId)) {
             tasksMap.set(taskId, {
               id: taskId,
@@ -128,37 +104,50 @@ class DashBoard {
               title: row.taskname,
               description: row.taskDescription,
               priority: mapPriority[row.priority],
-              assignedTo: [user],
+              assignedTo: [],
               dueDate: formatDate(row.dateEnd),
             });
-          } else {
-            tasksMap.get(taskId).assignedTo.push(user);
+          }
+
+          // Only add user if task is assigned to someone
+          if (row.assignedUserId) {
+            let photoLink = null;
+            if (row.photo) {
+              photoLink = `https://kdjkcdkapjgimrnugono.supabase.co/storage/v1/object/public/images/${row.photo}`;
+            }
+
+            const user = {
+              id: row.assignedUserId,
+              name: row.assignedUserName,
+              email: row.assignedUserEmail,
+              photoPath: photoLink,
+              joinId: row.joiny,
+              // Removed initials and bgColor - will be handled by frontend
+            };
+
+            // Check if user already added to avoid duplicates
+            const existingUser = tasksMap
+              .get(taskId)
+              .assignedTo.find((u) => u.id === user.id);
+            if (!existingUser) {
+              tasksMap.get(taskId).assignedTo.push(user);
+            }
           }
         });
 
+        // Handle members - simplified without initials/bgColor
         const members = memberResult.map((row) => {
-          const initials = row.name
-            .split(" ")
-            .map((n) => n[0])
-            .join("")
-            .toUpperCase();
-
-          const bgColorOptions = [
-            "bg-blue-700",
-            "bg-orange-500",
-            "bg-purple-600",
-            "bg-green-600",
-            "bg-red-600",
-          ];
-          const bgColor = bgColorOptions[row.userId % bgColorOptions.length];
+          let photoLink = null;
+          if (row.photoPath) {
+            photoLink = `https://kdjkcdkapjgimrnugono.supabase.co/storage/v1/object/public/images/${row.photoPath}`;
+          }
 
           return {
             id: row.joinWorkSpace,
             name: row.name,
             email: row.email,
-            photoPath: `https://kdjkcdkapjgimrnugono.supabase.co/storage/v1/object/public/images/${row.photo}`,
-            initials,
-            bgColor,
+            photoPath: photoLink,
+            // Removed initials and bgColor
           };
         });
 
@@ -171,6 +160,7 @@ class DashBoard {
       });
     });
   }
+
   static getTaskDetail = async (taskId, workspaceId) => {
     const query = `
     SELECT 
@@ -212,11 +202,9 @@ class DashBoard {
 
     return new Promise(async (resolve, reject) => {
       try {
-        // Get available members
         const members = await new Promise((resolve, reject) => {
           pool.query(queryAvaMem, [workspaceId], (err, results) => {
             if (err) return reject(err);
-            // console.log (link);
             const mappedMembers = results.map((row) => {
               let link = null;
               if (row.photoPath != null) {
@@ -241,6 +229,7 @@ class DashBoard {
             resolve(mappedMembers);
           });
         });
+
         const subtasks = await new Promise((resolve, reject) => {
           pool.query(queryGetSubtask, [taskId], (err, results) => {
             if (err) return reject(err);
@@ -255,7 +244,6 @@ class DashBoard {
           });
         });
 
-        // Get task details
         pool.query(query, [taskId], async (err, rows) => {
           if (err) return reject(err);
 
@@ -275,10 +263,8 @@ class DashBoard {
             availableMembers: members,
           };
 
-          // Handle file if present
           if (row0.filePath) {
             const fileName = row0.filePath;
-
             const fileExt = fileName.split(".").pop().toLowerCase();
             task.assets.push({
               id: 1,
@@ -288,7 +274,6 @@ class DashBoard {
             });
           }
 
-          // Populate assigned users
           const seenUsers = new Set();
           rows.forEach((row) => {
             if (!row.assignedUserId || seenUsers.has(row.assignedUserId))
@@ -304,7 +289,7 @@ class DashBoard {
             if (row.photo != null) {
               link = `https://kdjkcdkapjgimrnugono.supabase.co/storage/v1/object/public/images/${row.photo}`;
             }
-            console.log();
+
             task.assignedTo.push({
               id: row.assignedUserId,
               name: row.assignedUserName,
@@ -358,6 +343,7 @@ class DashBoard {
             if (err2) {
               return reject(err2);
             }
+
             const assignedUsers = assignedUsersResult.map((u) => {
               let photoLink = null;
               if (u.photoPath) {
@@ -375,9 +361,7 @@ class DashBoard {
               (endDate - currentDate) / (1000 * 60 * 60 * 24)
             );
 
-            // Count status
             const status = row.StateCompletion;
-            // console.log (status);
 
             resolve({
               task: {
@@ -405,17 +389,14 @@ class DashBoard {
             inProgress = 0,
             completed = 0;
           const tasks = [];
+
           taskDataArray.forEach(({ task }) => {
-            if (task.daysLeft >= 0 && task.daysLeft < 7) {
-              tasks.push(task);
-            }
-            // console.log(task.daysLeft);
-            // Status counters
+            tasks.push(task);
+
             if (task.status === 1) todo++;
             else if (task.status === 2) inProgress++;
             else if (task.status === 3) completed++;
           });
-          // console.log(todo);
 
           const summary = {
             totalTasks: results.length,

@@ -24,7 +24,7 @@ const Dashboard = () => {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `http://localhost:5000/getDashBoard/${workspacedId}`,
+        `https://task-up.up.railway.app/getDashBoard/${workspacedId}`,
         {
           method: "GET",
           headers: {

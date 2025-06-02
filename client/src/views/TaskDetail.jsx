@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import Sidebar from "../component/Sidebar";
 import Navbar from "../component/Navbar";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
 
 import PageLayout from "../component/board/task-detail/PageLayout";
@@ -59,7 +60,7 @@ function TaskDetail() {
   const fetchTaskDetail = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5000/getTaskDetail", {
+      const response = await fetch("https://task-up.up.railway.app/getTaskDetail", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -92,7 +93,7 @@ function TaskDetail() {
         setTask(task);
         setOriginalTask(JSON.parse(JSON.stringify(task)));
       } else {
-        toast.error(data.message || "Failed to fetch user", {
+        toast.error(data.message || "Failed to fetch task", {
           position: "top-right",
         });
       }
@@ -167,10 +168,13 @@ function TaskDetail() {
     try {
       const userData = JSON.parse(localStorage.getItem("user"));
       if (!userData) {
+        toast.error("User data not found. Please login again.", {
+          position: "top-right",
+        });
         return;
       }
 
-      const response = await fetch("http://localhost:5000/updateTask", {
+      const response = await fetch("https://task-up.up.railway.app/updateTask", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -186,10 +190,22 @@ function TaskDetail() {
       if (data.success) {
         setOriginalTask(JSON.parse(JSON.stringify(task)));
         setHasChanges(false);
-        alert("Task updated successfully!");
+        toast.success("Task updated successfully!", {
+          position: "top-right",
+        });
+      } else {
+        toast.error(data.message || "Failed to update task", {
+          position: "top-right",
+        });
       }
     } catch (error) {
       console.error("Error update task:", error);
+      toast.error(
+        "Error updating task: " + (error.message || "Unknown error"),
+        {
+          position: "top-right",
+        }
+      );
     }
   }, [task, originalTask]);
 
@@ -243,7 +259,9 @@ function TaskDetail() {
 
                 {/* Subtasks */}
                 <div className="!mt-8">
-                  <h3 className="font-medium text-gray-900 !mb-3">Subtasks:</h3>
+                  <h3 className="font-semibold text-gray-900 !mb-3">
+                    Subtasks:
+                  </h3>
                   <SubtaskList
                     subtasks={task.subtasks}
                     onSubtasksChange={handleSubtasksChange}
@@ -257,8 +275,8 @@ function TaskDetail() {
               <div className="col-span-1 max-w-[260px]">
                 {/* Assignees section */}
                 <div className="!mb-8">
-                  <h3 className="font-medium text-gray-900 !mb-3">
-                    Assigned members:
+                  <h3 className="font-semibold text-gray-900 !mb-3">
+                    Assignees:
                   </h3>
                   <AssigneesDropdown
                     assignees={task.assignedTo}
@@ -270,7 +288,7 @@ function TaskDetail() {
 
                 {/* Assets section */}
                 <div className="!mb-6">
-                  <h3 className="font-medium text-gray-900 !mb-3">Assets</h3>
+                  <h3 className="font-semibold text-gray-900 !mb-3">Assets:</h3>
                   <AssetsList assets={task.assets} />
                 </div>
               </div>
@@ -288,12 +306,25 @@ function TaskDetail() {
                 disabled={!hasChanges}
                 onClick={handleUpdateTask}
               >
-                Update
+                UPDATE
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable={false}
+        pauseOnHover={false}
+        theme="light"
+      />
     </div>
   );
 }

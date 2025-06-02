@@ -8,9 +8,24 @@ const STATUS_OPTIONS = [
 ];
 
 const PRIORITY_OPTIONS = [
-  { id: "High", label: "High", class: "bg-red-100 text-red-700" },
-  { id: "Medium", label: "Medium", class: "bg-orange-100 text-orange-700" },
-  { id: "Low", label: "Low", class: "bg-green-100 text-green-700" },
+  {
+    id: "High",
+    label: "High",
+    bgClass: "bg-red-100",
+    textClass: "text-red-800",
+  },
+  {
+    id: "Medium",
+    label: "Medium",
+    bgClass: "bg-yellow-100",
+    textClass: "text-yellow-800",
+  },
+  {
+    id: "Low",
+    label: "Low",
+    bgClass: "bg-green-100",
+    textClass: "text-green-800",
+  },
 ];
 
 // Base dropdown component
@@ -18,7 +33,7 @@ const Dropdown = ({ trigger, menu, isOpen, reference }) => (
   <div className="relative" ref={reference}>
     {trigger}
     {isOpen && (
-      <div className="absolute top-full left-0 mt-1 bg-white shadow-lg rounded-md border border-gray-200 z-10">
+      <div className="absolute top-full left-0 !mt-2 bg-white shadow-lg rounded-md border border-gray-200 z-10">
         {menu}
       </div>
     )}
@@ -31,13 +46,22 @@ const getStatusColor = (status) => {
   return option ? option.color : "bg-gray-500";
 };
 
-const getPriorityBg = (priority) => {
+const getPriorityClasses = (priority) => {
   const option = PRIORITY_OPTIONS.find((opt) => opt.id === priority);
-  return option ? option.class : "bg-gray-100 text-gray-700";
+  return option
+    ? `${option.bgClass} ${option.textClass}`
+    : "bg-gray-100 text-gray-700";
 };
 
 // Status dropdown component
-export const StatusDropdown = ({ status, isOpen, onToggle, onSelect, disabled = false, canEdit = true }) => {
+export const StatusDropdown = ({
+  status,
+  isOpen,
+  onToggle,
+  onSelect,
+  disabled = false,
+  canEdit = true,
+}) => {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -63,12 +87,14 @@ export const StatusDropdown = ({ status, isOpen, onToggle, onSelect, disabled = 
   const statusTrigger = (
     <div
       className={`flex items-center !p-1 rounded-md ${
-        canEdit 
-          ? "cursor-pointer hover:bg-gray-50" 
-          : "cursor-not-allowed"
+        canEdit ? "cursor-pointer hover:bg-gray-50" : "cursor-not-allowed"
       }`}
       onClick={handleToggle}
-      title={!canEdit ? "You don't have permission to change status" : "Click to change status"}
+      title={
+        !canEdit
+          ? "You don't have permission to change status"
+          : "Click to change status"
+      }
     >
       <span
         className={`h-2 w-2 rounded-full ${getStatusColor(status)} !mr-2`}
@@ -101,9 +127,7 @@ export const StatusDropdown = ({ status, isOpen, onToggle, onSelect, disabled = 
           className="flex items-center !px-3 !py-2 hover:bg-gray-50 cursor-pointer"
           onClick={() => onSelect(option.id)}
         >
-          <span
-            className={`h-2 w-2 rounded-full ${option.color} !mr-2`}
-          ></span>
+          <span className={`h-2 w-2 rounded-full ${option.color} !mr-2`}></span>
           <span className="text-sm">{option.label}</span>
         </div>
       ))}
@@ -121,7 +145,14 @@ export const StatusDropdown = ({ status, isOpen, onToggle, onSelect, disabled = 
 };
 
 // Priority dropdown component
-export const PriorityDropdown = ({ priority, isOpen, onToggle, onSelect, disabled = false, canEdit = true }) => {
+export const PriorityDropdown = ({
+  priority,
+  isOpen,
+  onToggle,
+  onSelect,
+  disabled = false,
+  canEdit = true,
+}) => {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -146,15 +177,15 @@ export const PriorityDropdown = ({ priority, isOpen, onToggle, onSelect, disable
 
   const priorityTrigger = (
     <div
-      className={`text-xs !px-2 !py-1 rounded-full flex items-center ${getPriorityBg(
+      className={`text-xs !px-2 !py-1 rounded-full flex items-center ${getPriorityClasses(
         priority
-      )} ${
-        canEdit 
-          ? "cursor-pointer hover:opacity-80" 
-          : "cursor-not-allowed"
-      }`}
+      )} ${canEdit ? "cursor-pointer hover:opacity-80" : "cursor-not-allowed"}`}
       onClick={handleToggle}
-      title={!canEdit ? "You don't have permission to change priority" : "Click to change priority"}
+      title={
+        !canEdit
+          ? "You don't have permission to change priority"
+          : "Click to change priority"
+      }
     >
       {priority}
       {canEdit && (
@@ -175,18 +206,31 @@ export const PriorityDropdown = ({ priority, isOpen, onToggle, onSelect, disable
   );
 
   const priorityMenu = (
-    <div className="w-32">
+    <div className="w-34">
       {PRIORITY_OPTIONS.map((option) => (
         <div
           key={option.id}
-          className={`!px-3 !py-2 text-sm hover:bg-gray-50 cursor-pointer ${
-            option.class.includes("text-")
-              ? option.class.split(" ").find((c) => c.startsWith("text-"))
-              : ""
-          }`}
+          className="flex items-center justify-between !px-3 !py-2 text-left text-sm hover:bg-gray-50 cursor-pointer"
           onClick={() => onSelect(option.id)}
         >
-          {option.label}
+          <span
+            className={`!px-2 !py-1 rounded-full text-xs ${option.bgClass} ${option.textClass}`}
+          >
+            {option.label}
+          </span>
+          {priority === option.id && (
+            <svg
+              className="w-4 h-4 text-blue-600"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clipRule="evenodd"
+              />
+            </svg>
+          )}
         </div>
       ))}
     </div>

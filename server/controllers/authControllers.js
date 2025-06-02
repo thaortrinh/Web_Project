@@ -61,8 +61,8 @@ exports.signup = (req, res) => {
       const userData = {
         name: username,
         email: email,
-        // password: hashedPassword,
-        password: password,
+        password: hashedPassword,
+        // password: password,
       };
 
       User.create(userData, (err, result) => {
@@ -105,46 +105,45 @@ exports.login = (req, res) => {
         message: "User not found",
       });
     }
-    // bcrypt.compare(password, user.password, (err, isMatch) => {
-    //   if (err) {
-    //     return res.status(500).json({
-    //       error: true,
-    //       message: "Error comparing passwords",
-    //     });
-    //   }
+    bcrypt.compare(password, user.password, (err, isMatch) => {
+      if (err) {
+        return res.status(500).json({
+          error: true,
+          message: "Error comparing passwords",
+        });
+      }
 
-    //   if (!isMatch) {
-    //     return res.status(401).json({
-    //       error: true,
-    //       message: "Incorrect password",
-    //     });
-    //   }
+      if (!isMatch) {
+        return res.status(401).json({
+          error: true,
+          message: "Incorrect password",
+        });
+      }
 
-    // Direct password comparison instead of using bcrypt
-    if (password !== user.password) {
-      return res.status(401).json({
-        error: true,
-        message: "Incorrect password",
+      // Direct password comparison instead of using bcrypt
+      // if (password !== user.password) {
+      //   return res.status(401).json({
+      //     error: true,
+      //     message: "Incorrect password",
+      //   });
+      // }
+
+      const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, {
+        expiresIn: "1h",
       });
-    }
-
-    const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, {
-      expiresIn: "1h",
+      // Log in successfully, might need JWT token later nhe Qunu
+      return res.status(200).json({
+        success: true,
+        message: "Login successful",
+        user: {
+          userId: user.userId,
+          email: user.email,
+          name: user.name,
+          photoPath: user.photoPath,
+          initials: user.initials,
+        },
+        token,
+      });
     });
-    // Log in successfully, might need JWT token later nhe Qunu
-    return res.status(200).json({
-      success: true,
-      message: "Login successful",
-      user: {
-        userId: user.userId, // Fix: Change from user.id to user.userId
-        email: user.email,
-        name: user.name,
-        photoPath: user.photoPath,
-        initials: user.initials
-      },
-      token,
-    });
-
-    // });
   });
 };

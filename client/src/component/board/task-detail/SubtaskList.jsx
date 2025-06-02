@@ -45,14 +45,18 @@ const SubtaskList = ({ subtasks, onSubtasksChange, isManager, isAssignee }) => {
     setIsAddingSubtask(false);
   };
 
+  const handleCancelAddingSubtask = () => {
+    setIsAddingSubtask(false);
+    setNewSubtask("");
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
       handleAddSubtask();
     }
     if (e.key === "Escape") {
-      setIsAddingSubtask(false);
-      setNewSubtask("");
+      handleCancelAddingSubtask();
     }
   };
 
@@ -167,29 +171,16 @@ const SubtaskList = ({ subtasks, onSubtasksChange, isManager, isAssignee }) => {
                 value={newSubtask}
                 onChange={(e) => setNewSubtask(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Enter subtask title"
                 className="flex-1 border border-gray-300 rounded-md !px-3 !py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                 autoFocus
               />
-              <div className="flex !ml-2">
-                <button
-                  onClick={handleAddSubtask}
-                  className="bg-blue-500 hover:bg-blue-600 text-white !py-2 !px-3 rounded-md text-sm font-medium"
-                  type="button"
-                >
-                  Add
-                </button>
-                <button
-                  onClick={() => {
-                    setIsAddingSubtask(false);
-                    setNewSubtask("");
-                  }}
-                  className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 !py-2 !px-3 rounded-md text-sm font-medium !ml-2"
-                  type="button"
-                >
-                  Cancel
-                </button>
-              </div>
+              <button
+                onClick={handleCancelAddingSubtask}
+                className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 !py-2 !px-3 rounded-md text-sm font-medium !ml-2"
+                type="button"
+              >
+                Cancel
+              </button>
             </div>
           )}
         </>

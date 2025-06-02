@@ -1,4 +1,4 @@
-const Task = require("../model/Task"); // Đổi từ Dashboard sang Task
+const Task = require("../model/Task");
 
 exports.getTask = (req, res) => {
   const { taskId, workspaceId } = req.body;
@@ -9,7 +9,7 @@ exports.getTask = (req, res) => {
       .json({ success: false, message: "taskId is required!" });
   }
 
-  Task.getTaskDetail(taskId, workspaceId) // Đổi từ Dashboard sang Task
+  Task.getTaskDetail(taskId, workspaceId)
     .then(task => {
       if (!task) {
         return res.status(404).json({
@@ -42,7 +42,7 @@ exports.updateTask = (req, res) => {
     });
   }
 
-  Task.updateTask(newTask, originalTask, (err, result) => { // Đổi từ Dashboard sang Task
+  Task.updateTask(newTask, originalTask, (err, result) => {
     if (err) {
       console.error("Error updating task:", err);
       return res.status(500).json({

@@ -110,7 +110,6 @@ class User {
   }
 
   static changePassword(userId, currentPassword, newPassword, callback) {
-    // Bước 1: Kiểm tra current password
     const checkQuery = "SELECT password FROM User WHERE userId = ?";
 
     pool.query(checkQuery, [userId], (err, results) => {
@@ -125,7 +124,6 @@ class User {
 
       const storedPassword = results[0].password;
 
-      // Bước 2: So sánh current password
       if (storedPassword !== currentPassword) {
         return callback(null, {
           success: false,
@@ -133,7 +131,6 @@ class User {
         });
       }
 
-      // Bước 3: Cập nhật password mới
       const updateQuery = "UPDATE User SET password = ? WHERE userId = ?";
 
       pool.query(updateQuery, [newPassword, userId], (err, updateResult) => {

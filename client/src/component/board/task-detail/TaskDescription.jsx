@@ -10,7 +10,8 @@ const TaskDescription = ({ description, editMode, toggleEditMode, handleSaveFiel
   }, [description, editMode]);
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter" && e.ctrlKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); // Prevent adding new line
       handleSaveField(localDescription);
     }
     if (e.key === "Escape") {
@@ -37,7 +38,7 @@ const TaskDescription = ({ description, editMode, toggleEditMode, handleSaveFiel
 
   return (
     <div>
-      <h3 className="font-medium text-gray-900 !mb-2">
+      <h3 className="font-semibold text-gray-900 !mb-2">
         Task description:
       </h3>
 
@@ -52,14 +53,6 @@ const TaskDescription = ({ description, editMode, toggleEditMode, handleSaveFiel
             className="w-full border border-gray-300 rounded-md !p-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 min-h-24"
             autoFocus
           />
-          <div className="flex justify-end">
-            <button
-              onClick={handleSave}
-              className="bg-blue-500 hover:bg-blue-600 text-white !py-1 !px-3 rounded-md text-sm"
-            >
-              Save
-            </button>
-          </div>
         </div>
       ) : (
         <p

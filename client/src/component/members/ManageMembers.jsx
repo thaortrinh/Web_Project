@@ -15,7 +15,6 @@ import {
   DeleteConfirmModal,
   AddMemberModal,
   UpdateRoleModal,
-  UserNotFoundModal,
 } from "./MemberModals";
 
 const ManageMembers = () => {
@@ -27,12 +26,10 @@ const ManageMembers = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showUpdateRoleModal, setShowUpdateRoleModal] = useState(false);
-  const [showUserNotFoundModal, setShowUserNotFoundModal] = useState(false);
 
   const [memberToDelete, setMemberToDelete] = useState(null);
   const [memberToUpdate, setMemberToUpdate] = useState(null);
   const [updatedRole, setUpdatedRole] = useState("");
-  const [notFoundEmail, setNotFoundEmail] = useState("");
 
   useEffect(() => {
     const storedWorkspace = JSON.parse(localStorage.getItem("workspace"));
@@ -172,9 +169,11 @@ const ManageMembers = () => {
 
       return true;
     } else if (result && result.userNotFound) {
-      setNotFoundEmail(email);
-      setShowUserNotFoundModal(true);
-      setShowAddModal(false);
+      // Show toast instead of modal for user not found
+      toast.error(`User with email "${email}" not found. Please check the email address.`, {
+        position: "top-right",
+        autoClose: 5000,
+      });
       return false;
     }
     return false;
@@ -251,7 +250,7 @@ const ManageMembers = () => {
                   <td className="!py-4 !px-8 text-gray-800">
                     <div className="flex items-center gap-3">
                       <div
-                        className={`w-8 h-8 rounded-full text-white flex items-center justify-center text-xs font-bold ${getAvatarColor(
+                        className={`w-8 h-8 rounded-full text-white flex items-center justify-center text-xs font-semibold ${getAvatarColor(
                           member.userId
                         )}`}
                       >
@@ -383,16 +382,6 @@ const ManageMembers = () => {
           onCancel={() => {
             setShowUpdateRoleModal(false);
             setMemberToUpdate(null);
-          }}
-        />
-      )}
-
-      {showUserNotFoundModal && (
-        <UserNotFoundModal
-          email={notFoundEmail}
-          onClose={() => {
-            setShowUserNotFoundModal(false);
-            setNotFoundEmail("");
           }}
         />
       )}

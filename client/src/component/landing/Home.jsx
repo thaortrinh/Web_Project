@@ -4,6 +4,18 @@ import { Link } from "react-router-dom";
 import board from "../../assets/board.png";
 
 const Home = () => {
+  // Function to handle smooth scroll to About Project section
+  const handleLearnMore = () => {
+    const aboutSection = document.getElementById('about-project');
+    if (aboutSection) {
+      const offsetTop = aboutSection.offsetTop - 60; // Offset 100px from top
+      window.scrollTo({
+        top: offsetTop,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <section
       id="home"
@@ -27,7 +39,10 @@ const Home = () => {
           >
             Get Started <ArrowRight size={16} />
           </Link>
-          <button className="bg-white text-gray-700 !px-8 !py-3 rounded-full border border-gray-200 hover:shadow-md transition duration-300">
+          <button 
+            onClick={handleLearnMore}
+            className="bg-white text-gray-700 !px-8 !py-3 rounded-full border border-gray-200 hover:shadow-md transition duration-300"
+          >
             Learn More
           </button>
         </div>

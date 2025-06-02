@@ -22,10 +22,8 @@ const AuthWrapper = () => {
   };
 
   useEffect(() => {
-    console.log("useEffect triggered, pathname:", location.pathname);
     const newIsSignup = location.pathname === "/signup";
     if (newIsSignup !== isSignup) {
-      console.log("Animation triggered:", isSignup, "->", newIsSignup);
       setIsAnimating(true);
 
       // Update state immediately

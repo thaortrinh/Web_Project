@@ -5,8 +5,8 @@ const taskController = require("../controllers/taskController");
 //////////////
 
 // Task trash operations
-router.post("/trashTask", taskController.trashTask);
-router.post("/getTrashTask", taskController.getTrashTasks);
+router.patch("/tasks/:taskId/trash", taskController.moveTaskToTrash);
+router.get("/workspaces/:workspaceId/trash", taskController.getTrashTasksByWorkspace);
 router.post("/restoreTrashTask", taskController.restoreTrashTask);
 router.post("/permanentlyDeleteTask", taskController.permanentlyDeleteTask);
 

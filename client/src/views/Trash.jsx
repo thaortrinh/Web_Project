@@ -12,7 +12,7 @@ const Trash = () => {
   const [workspaceRole, setWorkspaceRole] = useState(null);
   const [isManager, setIsManager] = useState(false);
 
-  // Function to check workspace role
+  // check if user is admin
   const checkWorkspaceRole = async (workspaceId) => {
     try {
       const userData = JSON.parse(localStorage.getItem("user"));
@@ -20,7 +20,7 @@ const Trash = () => {
         return;
       }
 
-      const response = await fetch("http://localhost:5000/checkWorkspaceRole", {
+      const response = await fetch("https://task-up.up.railway.app/checkWorkspaceRole", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,43 +46,33 @@ const Trash = () => {
   const fetchTrashtask = async (workspacedId) => {
     try {
       setIsLoading(true);
-      const response = await fetch("http://localhost:5000/getTrashTask", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          workspace: workspacedId,
-        }),
-      });
-
+      const response = await fetch(
+        `https://task-up.up.railway.app/workspaces/${workspacedId}/trash`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const data = await response.json();
       if (data.success) {
-        // console.log("Raw trash task data:", data.trashTask);
+        const trashTasks = data.data.tasks.map((row) => ({
+          id: row.id,
+          taskname: row.taskname,
+          priority: row.priority,
+          StateCompletion: row.StateCompletion,
+        }));
 
-        const trashTask = data.trashTask.map((row) => {
-          const taskId = row.TaskId;
-
-          //   console.log(`Task ID for ${row.taskname}: ${taskId}`);
-
-          return {
-            id: taskId,
-            taskname: row.taskname,
-            priority: row.priority,
-            StateCompletion: row.StateCompletion,
-          };
-        });
-
-        // console.log("Transformed trash tasks:", trashTask);
-
-        setTrashTask([...trashTask]);
+        setTrashTask(trashTasks);
       } else {
-        toast.error(data.message || "Get into workspace fail", {
+        toast.error(data.message || "Failed to get trash tasks", {
           position: "top-right",
         });
       }
     } catch (error) {
-      toast.error("Error: " + (error.message || "Unknown error"), {
+      console.error("Error fetching trash tasks:", error);
+      toast.error("Network error. Please try again.", {
         position: "top-right",
       });
     } finally {
@@ -108,10 +98,10 @@ const Trash = () => {
       <div className="flex-1 flex flex-col !mt-16 bg-gray-50">
         <div className="flex-1 !p-8 md:p-6 overflow-auto !ml-50">
           {/* TRASH BIN */}
-          <TrashBin 
-            trashTask={trashTask} 
-            workspaceId={workspacedId} 
-            isManager={isManager} 
+          <TrashBin
+            trashTask={trashTask}
+            workspaceId={workspacedId}
+            isManager={isManager}
           />
         </div>
       </div>

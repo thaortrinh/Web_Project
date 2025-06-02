@@ -30,7 +30,7 @@ const Profile = () => {
         return;
       }
 
-      const response = await fetch("http://localhost:5000/getProfile", {
+      const response = await fetch("https://task-up.up.railway.app/getProfile", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -99,7 +99,7 @@ const Profile = () => {
     });
 
     try {
-      const response = await axios.post("http://localhost:5000/updateProfile", {
+      const response = await axios.post("https://task-up.up.railway.app/updateProfile", {
         id: userData.id,
         username: data.username.trim(),
       });
@@ -185,7 +185,7 @@ const Profile = () => {
     data.append('uploaded_file', file);
 
     try {
-      const response = await fetch("http://localhost:5000/addProfilePicture", {
+      const response = await fetch("https://task-up.up.railway.app/addProfilePicture", {
         method: 'POST',
         body: data,
       });

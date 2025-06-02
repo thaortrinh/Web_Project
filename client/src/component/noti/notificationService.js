@@ -1,13 +1,16 @@
 // Fetch user's pending invitations
 export const fetchUserInvitations = async (userId) => {
   try {
-    const response = await fetch("http://localhost:5000/getUserInvitations", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId }),
-    });
+    const response = await fetch(
+      "https://task-up.up.railway.app/getUserInvitations",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }),
+      }
+    );
 
     const data = await response.json();
 
@@ -26,13 +29,16 @@ export const fetchUserInvitations = async (userId) => {
 // Respond to a workspace invitation (accept or decline)
 export const respondToInvitation = async (joinWorkSpace, accept) => {
   try {
-    const response = await fetch("http://localhost:5000/respondToInvitation", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ joinWorkSpace, accept }),
-    });
+    const response = await fetch(
+      "https://task-up.up.railway.app/respondToInvitation",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ joinWorkSpace, accept }),
+      }
+    );
 
     const data = await response.json();
 

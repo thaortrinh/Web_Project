@@ -40,7 +40,7 @@ const Login = ({ onNavigate, standalone = true }) => {
     });
 
     try {
-      const response = await axios.post("http://localhost:5000/login", {
+      const response = await axios.post("https://task-up.up.railway.app/login", {
         email: data.email,
         password: data.password,
       });
@@ -129,7 +129,7 @@ const Login = ({ onNavigate, standalone = true }) => {
 
         {/* Title */}
         <div className="flex flex-col gap-y-3">
-          <h2 className="text-3xl font-bold text-gray-900">Log in to</h2>
+          <h2 className="text-3xl font-bold text-gray-900">Log In to</h2>
           <h2 className="text-3xl font-bold">
             <span className="bg-gradient-to-r from-[#435090] to-[#3885c4] text-transparent bg-clip-text inline-block">
               TaskUP

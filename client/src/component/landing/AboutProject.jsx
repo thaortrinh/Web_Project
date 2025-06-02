@@ -2,6 +2,9 @@ import React from "react";
 import react from "../../assets/react.svg";
 import nodejs from "../../assets/nodejs.svg";
 import mysql from "../../assets/mysql.svg";
+import tailwind from "../../assets/Tailwind-CSS.svg";
+import supabase from "../../assets/supabase.svg";
+import express from "../../assets/express-js.svg";
 
 const AboutProject = () => {
   return (
@@ -27,7 +30,7 @@ const AboutProject = () => {
             <h3 className="text-3xl font-bold text-gray-900 !mb-6">
               Project Overview
             </h3>
-            <p className="text-gray-600 text-lg leading-relaxed !mb-6 text-justify">
+            <p className="text-gray-600 text-base leading-relaxed !mb-6 text-justify">
               TaskUP is the final capstone project for the{" "}
               <strong className="text-gray-800">
                 Web Application Development
@@ -90,45 +93,64 @@ const AboutProject = () => {
 
         {/* Technology Stack */}
         <div className="bg-white rounded-2xl shadow-lg !p-8 !mb-16">
-          <h3 className="text-3xl font-bold text-gray-900 !mb-8 text-center">
+          <h3 className="text-3xl font-bold text-gray-900 !mb-12 text-center">
             Technology Stack
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
+            {/* Frontend tech */}
             <div className="text-center">
-              <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center !mx-auto !mb-4">
+              <div className="w-18 h-18 bg-blue-100 rounded-full flex items-center justify-center !mx-auto !mb-4">
                 <img src={react} alt="React" className="w-10 h-10" />
               </div>
-              <h4 className="text-xl font-semibold text-gray-800 !mb-3">
-                React JS
+              <h4 className="text-base font-medium text-gray-600 !mb-3">
+                React
               </h4>
-              <p className="text-gray-600 leading-relaxed">
-                Modern frontend framework for building dynamic and responsive
-                user interfaces with component-based architecture.
-              </p>
             </div>
+
             <div className="text-center">
-              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center !mx-auto !mb-4">
+              <div className="w-18 h-18 bg-cyan-100 rounded-full flex items-center justify-center !mx-auto !mb-4">
+                <img src={tailwind} alt="Tailwind CSS" className="w-10 h-10" />
+              </div>
+              <h4 className="text-base font-medium text-gray-600 !mb-3">
+                Tailwind CSS
+              </h4>
+            </div>
+
+            {/* Backend tech */}
+            <div className="text-center">
+              <div className="w-18 h-18 bg-green-100 rounded-full flex items-center justify-center !mx-auto !mb-4">
                 <img src={nodejs} alt="nodejs" className="w-10 h-10" />
               </div>
-              <h4 className="text-xl font-semibold text-gray-800 !mb-3">
+              <h4 className="text-base font-medium text-gray-600 !mb-3">
                 Node.js
               </h4>
-              <p className="text-gray-600 leading-relaxed">
-                Powerful backend runtime environment enabling server-side
-                JavaScript for scalable and efficient API development.
-              </p>
             </div>
+
             <div className="text-center">
-              <div className="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center !mx-auto !mb-4">
+              <div className="w-18 h-18 bg-gray-100 rounded-full flex items-center justify-center !mx-auto !mb-4">
+                <img src={express} alt="Express" className="w-10 h-10" />
+              </div>
+              <h4 className="text-base font-medium text-gray-600 !mb-3">
+                Express
+              </h4>
+            </div>
+
+            <div className="text-center">
+              <div className="w-18 h-18 bg-orange-100 rounded-full flex items-center justify-center !mx-auto !mb-4">
                 <img src={mysql} alt="mysql" className="w-10 h-10" />
               </div>
-              <h4 className="text-xl font-semibold text-gray-800 !mb-3">
+              <h4 className="text-base font-medium text-gray-600 !mb-3">
                 MySQL
               </h4>
-              <p className="text-gray-600 leading-relaxed">
-                Reliable relational database management system ensuring secure
-                data storage and efficient query performance.
-              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-18 h-18 bg-emerald-100 rounded-full flex items-center justify-center !mx-auto !mb-4">
+                <img src={supabase} alt="Supabase" className="w-10 h-10" />
+              </div>
+              <h4 className="text-base font-medium text-gray-600 !mb-3">
+                Supabase
+              </h4>
             </div>
           </div>
         </div>

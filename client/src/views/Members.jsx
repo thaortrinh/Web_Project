@@ -16,7 +16,7 @@ const Members = () => {
                 return;
             }
 
-            const response = await fetch("http://localhost:5000/checkWorkspaceRole", {
+            const response = await fetch("https://task-up.up.railway.app/checkWorkspaceRole", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
