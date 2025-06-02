@@ -37,7 +37,7 @@ const AssigneesDropdown = ({ assignees, onAssigneesChange, isManager }) => {
       setIsLoading(true);
       
       const response = await axios.post(
-        "http://localhost:5000/getActiveMembers",
+        "https://task-up.up.railway.app/getActiveMembers",
         {
           workspaceId: workspaceId,
         }

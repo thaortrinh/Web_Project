@@ -73,13 +73,16 @@ const TrashBin = ({ trashTask, workspaceId, isManager }) => {
         userId: userData.userId,
       };
 
-      const response = await fetch("http://localhost:5000/restoreTrashTask", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      });
+      const response = await fetch(
+        "https://task-up.up.railway.app/restoreTrashTask",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
 
       const data = await response.json();
       if (data.success) {
@@ -112,7 +115,7 @@ const TrashBin = ({ trashTask, workspaceId, isManager }) => {
       }
 
       const response = await fetch(
-        "http://localhost:5000/permanentlyDeleteTask",
+        "https://task-up.up.railway.app/permanentlyDeleteTask",
         {
           method: "POST",
           headers: {
@@ -157,7 +160,7 @@ const TrashBin = ({ trashTask, workspaceId, isManager }) => {
 
       // create an array of promises to restore each task
       const restorePromises = tasks.map((task) =>
-        fetch("http://localhost:5000/restoreTrashTask", {
+        fetch("https://task-up.up.railway.app/restoreTrashTask", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -207,7 +210,7 @@ const TrashBin = ({ trashTask, workspaceId, isManager }) => {
 
       // Create an array of promises to delete each task
       const deletePromises = tasks.map((task) =>
-        fetch("http://localhost:5000/permanentlyDeleteTask", {
+        fetch("https://task-up.up.railway.app/permanentlyDeleteTask", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -319,7 +322,7 @@ const TrashBin = ({ trashTask, workspaceId, isManager }) => {
       text: "text-red-700",
     },
     Medium: {
-      bg: "bg-amber-100", 
+      bg: "bg-amber-100",
       text: "text-amber-700",
     },
     Low: {
@@ -383,7 +386,9 @@ const TrashBin = ({ trashTask, workspaceId, isManager }) => {
               <th className="!py-4 !px-8 text-left font-semibold">Stage</th>
               <th className="!py-4 !px-8 text-left font-semibold">Priority</th>
               {isManager && (
-                <th className="!py-4 !px-8 text-center font-semibold">Actions</th>
+                <th className="!py-4 !px-8 text-center font-semibold">
+                  Actions
+                </th>
               )}
             </tr>
           </thead>
@@ -424,7 +429,10 @@ const TrashBin = ({ trashTask, workspaceId, isManager }) => {
             ))}
             {tasks.length === 0 && (
               <tr>
-                <td colSpan={isManager ? "4" : "3"} className="!py-16 text-center text-gray-400">
+                <td
+                  colSpan={isManager ? "4" : "3"}
+                  className="!py-16 text-center text-gray-400"
+                >
                   Trash is empty.
                 </td>
               </tr>

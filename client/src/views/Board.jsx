@@ -60,7 +60,7 @@ const Board = () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/tasks/${taskId}/trash`,
+        `https://task-up.up.railway.app/tasks/${taskId}/trash`,
         {
           method: "PATCH",
           headers: {
@@ -100,7 +100,7 @@ const Board = () => {
       setIsLoading(true);
 
       const response = await fetch(
-        `http://localhost:5000/board/${workspaceId}`,
+        `https://task-up.up.railway.app/board/${workspaceId}`,
         {
           method: "GET",
           headers: {

@@ -29,16 +29,19 @@ const Navbar = ({ workspaces, activeTab, onTabChange, refreshWorkspaces }) => {
       const userData = JSON.parse(localStorage.getItem("user"));
       if (!userData) return;
 
-      const response = await fetch("http://localhost:5000/checkWorkspaceRole", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: userData.userId,
-          workspaceId: workspaceId,
-        }),
-      });
+      const response = await fetch(
+        "https://task-up.up.railway.app/checkWorkspaceRole",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: userData.userId,
+            workspaceId: workspaceId,
+          }),
+        }
+      );
 
       const data = await response.json();
 

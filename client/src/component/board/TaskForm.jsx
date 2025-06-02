@@ -69,7 +69,7 @@ const TaskForm = ({ isOpen, onClose, onSave, workspaceId }) => {
       }
 
       const response = await axios.post(
-        "http://localhost:5000/getActiveMembers",
+        "https://task-up.up.railway.app/getActiveMembers",
         {
           workspaceId: activeWorkspaceId,
         }
@@ -302,7 +302,7 @@ const TaskForm = ({ isOpen, onClose, onSave, workspaceId }) => {
       }
 
       const response = await axios.post(
-        "http://localhost:5000/addTask",
+        "https://task-up.up.railway.app/addTask",
         formDataToSend,
         {
           headers: {

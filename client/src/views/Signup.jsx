@@ -40,7 +40,7 @@ const SignUp = ({ onNavigate, standalone = true }) => {
     });
 
     try {
-      const response = await axios.post("http://localhost:5000/signup", {
+      const response = await axios.post("https://task-up.up.railway.app/signup", {
         username: data.username,
         email: data.email,
         password: data.password,

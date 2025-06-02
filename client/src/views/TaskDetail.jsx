@@ -60,7 +60,7 @@ function TaskDetail() {
   const fetchTaskDetail = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5000/getTaskDetail", {
+      const response = await fetch("https://task-up.up.railway.app/getTaskDetail", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -174,7 +174,7 @@ function TaskDetail() {
         return;
       }
 
-      const response = await fetch("http://localhost:5000/updateTask", {
+      const response = await fetch("https://task-up.up.railway.app/updateTask", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

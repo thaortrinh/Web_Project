@@ -96,7 +96,7 @@ const AddWorkspaceForm = ({ isOpen, onClose, onAdd }) => {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:5000/addWorkSpace", {
+      const response = await axios.post("https://task-up.up.railway.app/addWorkSpace", {
         workspacename: workspaceName.trim(),
         description: description.trim(),
         dateCreate: dateCreate,

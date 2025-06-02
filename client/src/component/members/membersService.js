@@ -11,7 +11,7 @@ export const fetchMembers = async (workspace) => {
       return { success: false };
     }
 
-    const response = await fetch("http://localhost:5000/getMember", {
+    const response = await fetch("https://task-up.up.railway.app/getMember", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -31,9 +31,9 @@ export const fetchMembers = async (workspace) => {
         role: row.role,
         joinWorkSpace: row.joinWorkSpace,
         userId: row.userId,
-        photoPath: row.photoPath
+        photoPath: row.photoPath,
       }));
-      
+
       return { success: true, members };
     } else {
       console.error("Failed to get members:", data.message);
@@ -52,7 +52,13 @@ export const fetchMembers = async (workspace) => {
 };
 
 // Add a new member
-export const addMember = async (email, role, workspace, members, setMembers) => {
+export const addMember = async (
+  email,
+  role,
+  workspace,
+  members,
+  setMembers
+) => {
   if (!email.trim()) {
     toast.error("Email is required", { position: "top-right" });
     return false;
@@ -66,13 +72,13 @@ export const addMember = async (email, role, workspace, members, setMembers) => 
   try {
     // Lấy userId từ localStorage
     const user = JSON.parse(localStorage.getItem("user"));
-    
+
     if (!user || !user.userId) {
       toast.error("User information is missing", { position: "top-right" });
       return false;
     }
 
-    const response = await fetch("http://localhost:5000/addMember", {
+    const response = await fetch("https://task-up.up.railway.app/addMember", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -81,7 +87,7 @@ export const addMember = async (email, role, workspace, members, setMembers) => 
         email: email,
         role: role || "Member",
         WorkSpace: workspace.WorkSpace,
-        userId: user.userId
+        userId: user.userId,
       }),
     });
 
@@ -104,7 +110,7 @@ export const addMember = async (email, role, workspace, members, setMembers) => 
         role: data.member.role,
         isPending: data.member.isPending,
         isManager: data.member.isManager,
-        userId: data.member.userId
+        userId: data.member.userId,
       };
 
       setMembers([...members, newMember]);
@@ -121,16 +127,22 @@ export const addMember = async (email, role, workspace, members, setMembers) => 
       ) {
         return { userNotFound: true, email };
       } else if (data.code === "PERMISSION_DENIED") {
-        toast.error("You don't have permission to add members", { position: "top-right" });
+        toast.error("You don't have permission to add members", {
+          position: "top-right",
+        });
         return false;
       } else {
-        toast.error(data.message || "Failed to add member", { position: "top-right" });
+        toast.error(data.message || "Failed to add member", {
+          position: "top-right",
+        });
         return false;
       }
     }
   } catch (error) {
     console.error("Error in addMember:", error);
-    toast.error("Error: " + (error.message || "Unknown error"), { position: "top-right" });
+    toast.error("Error: " + (error.message || "Unknown error"), {
+      position: "top-right",
+    });
     return false;
   }
 };
@@ -139,53 +151,65 @@ export const addMember = async (email, role, workspace, members, setMembers) => 
 export const deleteMember = async (memberToDelete, members, setMembers) => {
   try {
     const user = JSON.parse(localStorage.getItem("user"));
-    
+
     if (!user || !user.userId) {
       toast.error("User information is missing", { position: "top-right" });
       return false;
     }
 
-    const response = await fetch("http://localhost:5000/deleteMember", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        joinWorkSpace: memberToDelete.joinWorkSpace,
-        userId: user.userId // check userId if admin in server
-      }),
-    });
+    const response = await fetch(
+      "https://task-up.up.railway.app/deleteMember",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          joinWorkSpace: memberToDelete.joinWorkSpace,
+          userId: user.userId, // check userId if admin in server
+        }),
+      }
+    );
 
     const data = await response.json();
 
     if (data.success) {
       setMembers(
-        members.filter(
-          (m) => m.joinWorkSpace !== memberToDelete.joinWorkSpace
-        )
+        members.filter((m) => m.joinWorkSpace !== memberToDelete.joinWorkSpace)
       );
       toast.success("Member removed successfully!", { position: "top-right" });
       return true;
     } else {
       console.error("Failed to delete member:", data.message);
-      
+
       if (data.code === "PERMISSION_DENIED") {
-        toast.error("You don't have permission to delete members", { position: "top-right" });
+        toast.error("You don't have permission to delete members", {
+          position: "top-right",
+        });
         return false;
       } else {
-        toast.error(data.message || "Failed to remove member", { position: "top-right" });
+        toast.error(data.message || "Failed to remove member", {
+          position: "top-right",
+        });
         return false;
       }
     }
   } catch (error) {
     console.error("Error in deleteMember:", error);
-    toast.error("Error: " + (error.message || "Unknown error"), { position: "top-right" });
+    toast.error("Error: " + (error.message || "Unknown error"), {
+      position: "top-right",
+    });
     return false;
   }
 };
 
 // Update member role
-export const updateMemberRole = async (memberToUpdate, updatedRole, members, setMembers) => {
+export const updateMemberRole = async (
+  memberToUpdate,
+  updatedRole,
+  members,
+  setMembers
+) => {
   if (!updatedRole.trim()) {
     toast.error("Role cannot be empty", { position: "top-right" });
     return false;
@@ -193,23 +217,26 @@ export const updateMemberRole = async (memberToUpdate, updatedRole, members, set
 
   try {
     const user = JSON.parse(localStorage.getItem("user"));
-    
+
     if (!user || !user.userId) {
       toast.error("User information is missing", { position: "top-right" });
       return false;
     }
 
-    const response = await fetch("http://localhost:5000/updateMemberRole", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        joinWorkSpace: memberToUpdate.joinWorkSpace,
-        role: updatedRole,
-        userId: user.userId // check admin role in server
-      }),
-    });
+    const response = await fetch(
+      "https://task-up.up.railway.app/updateMemberRole",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          joinWorkSpace: memberToUpdate.joinWorkSpace,
+          role: updatedRole,
+          userId: user.userId, // check admin role in server
+        }),
+      }
+    );
 
     const data = await response.json();
 
@@ -222,22 +249,30 @@ export const updateMemberRole = async (memberToUpdate, updatedRole, members, set
             : m
         )
       );
-      toast.success("Member role updated successfully!", { position: "top-right" });
+      toast.success("Member role updated successfully!", {
+        position: "top-right",
+      });
       return true;
     } else {
       console.error("Failed to update member role:", data.message);
-      
+
       if (data.code === "PERMISSION_DENIED") {
-        toast.error("You don't have permission to update member roles", { position: "top-right" });
+        toast.error("You don't have permission to update member roles", {
+          position: "top-right",
+        });
         return false;
       } else {
-        toast.error(data.message || "Failed to update member role", { position: "top-right" });
+        toast.error(data.message || "Failed to update member role", {
+          position: "top-right",
+        });
         return false;
       }
     }
   } catch (error) {
     console.error("Error in updateMemberRole:", error);
-    toast.error("Error: " + (error.message || "Unknown error"), { position: "top-right" });
+    toast.error("Error: " + (error.message || "Unknown error"), {
+      position: "top-right",
+    });
     return false;
   }
 };
@@ -246,32 +281,35 @@ export const updateMemberRole = async (memberToUpdate, updatedRole, members, set
 export const getCurrentUserRole = async (workspace) => {
   try {
     const user = JSON.parse(localStorage.getItem("user"));
-    
+
     if (!user || !user.userId || !workspace || !workspace.WorkSpace) {
       return { isAdmin: 0 };
     }
-    
-    const response = await fetch("http://localhost:5000/getCurrentUserRole", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId: user.userId,
-        workspaceId: workspace.WorkSpace,
-      }),
-    });
-    
+
+    const response = await fetch(
+      "https://task-up.up.railway.app/getCurrentUserRole",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.userId,
+          workspaceId: workspace.WorkSpace,
+        }),
+      }
+    );
+
     const data = await response.json();
-    
+
     if (data.success) {
-      return { 
+      return {
         isAdmin: data.isAdmin || 0,
-        role: data.role || "Member" 
+        role: data.role || "Member",
       };
     } else {
       console.error("Failed to get user role:", data.message);
-      return { isAdmin: 0 }; 
+      return { isAdmin: 0 };
     }
   } catch (error) {
     console.error("Error checking user role:", error);

@@ -57,7 +57,7 @@ const WorkspaceCard = ({ workspace, onClick, onUpdate, onFetchWorkspaces }) => {
       const workspaceId = workspace.WorkSpace || workspace.id;
 
       const response = await axios.post(
-        "http://localhost:5000/getActiveMembers",
+        "https://task-up.up.railway.app/getActiveMembers",
         {
           workspaceId: workspaceId,
         }
@@ -90,7 +90,7 @@ const WorkspaceCard = ({ workspace, onClick, onUpdate, onFetchWorkspaces }) => {
       const workspaceId = workspace.WorkSpace || workspace.id;
 
       const response = await axios.post(
-        "http://localhost:5000/getWorkspaceManager",
+        "https://task-up.up.railway.app/getWorkspaceManager",
         {
           workspaceId: workspaceId,
         }
@@ -143,11 +143,14 @@ const WorkspaceCard = ({ workspace, onClick, onUpdate, onFetchWorkspaces }) => {
     // Get the correct ID field
     const workspaceId = workspace.WorkSpace || workspace.id;
 
-    const response = await axios.post("http://localhost:5000/updateWorkSpace", {
-      id: workspaceId,
-      workspacename: editedWorkspaceName,
-      description: editedDescription || "",
-    });
+    const response = await axios.post(
+      "https://task-up.up.railway.app/updateWorkSpace",
+      {
+        id: workspaceId,
+        workspacename: editedWorkspaceName,
+        description: editedDescription || "",
+      }
+    );
 
     const result = response.data;
 
@@ -210,7 +213,7 @@ const WorkspaceCard = ({ workspace, onClick, onUpdate, onFetchWorkspaces }) => {
       const workspaceId = workspace.WorkSpace || workspace.id;
 
       const response = await axios.post(
-        "http://localhost:5000/leaveWorkspace",
+        "https://task-up.up.railway.app/leaveWorkspace",
         {
           userId: userData.userId,
           workspaceId: workspaceId,
@@ -263,7 +266,7 @@ const WorkspaceCard = ({ workspace, onClick, onUpdate, onFetchWorkspaces }) => {
       const workspaceId = workspaceToDelete.WorkSpace || workspaceToDelete.id;
 
       const response = await axios.post(
-        "http://localhost:5000/deleteWorkSpace",
+        "https://task-up.up.railway.app/deleteWorkSpace",
         {
           id: workspaceId,
         }
@@ -382,7 +385,7 @@ const WorkspaceCard = ({ workspace, onClick, onUpdate, onFetchWorkspaces }) => {
               <span className="absolute inset-0 flex items-center justify-center text-[10px] font-medium">
                 {avatarData.initials}
               </span>
-              
+
               {/* Manager avatar image overlay */}
               {avatarData.photoPath && (
                 <img
@@ -390,7 +393,7 @@ const WorkspaceCard = ({ workspace, onClick, onUpdate, onFetchWorkspaces }) => {
                   alt={avatarData.displayName}
                   className="absolute inset-0 w-full h-full object-cover rounded-full"
                   onError={(e) => {
-                    e.target.style.display = 'none';
+                    e.target.style.display = "none";
                   }}
                 />
               )}
@@ -532,7 +535,7 @@ const WorkspaceCard = ({ workspace, onClick, onUpdate, onFetchWorkspaces }) => {
                 <span className="absolute inset-0 flex items-center justify-center text-[10px] font-medium">
                   {member.initials}
                 </span>
-                
+
                 {/* Image overlay - hides initials when loaded */}
                 {member.photoPath && (
                   <img
@@ -540,7 +543,7 @@ const WorkspaceCard = ({ workspace, onClick, onUpdate, onFetchWorkspaces }) => {
                     alt={member.userName || member.name}
                     className="absolute inset-0 w-full h-full object-cover rounded-full"
                     onError={(e) => {
-                      e.target.style.display = 'none';
+                      e.target.style.display = "none";
                     }}
                   />
                 )}

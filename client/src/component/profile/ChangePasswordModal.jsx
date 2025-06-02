@@ -121,7 +121,7 @@ const ChangePasswordModal = ({ isOpen, onClose, userData }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/changePassword",
+        "https://task-up.up.railway.app/changePassword",
         {
           userId: userData.id,
           currentPassword: formData.currentPassword,
