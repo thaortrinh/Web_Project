@@ -99,7 +99,7 @@ class User {
     });
   }
   static updateUserNameById(userId, userName, callback) {
-    const query = "UPDATE user SET name = ? WHERE userId = ?";
+    const query = "UPDATE User SET name = ? WHERE userId = ?";
     pool.query(query, [userName, userId], (err, results) => {
       if (err) {
         console.error("Error finding user by ID:", err);
