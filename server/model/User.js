@@ -1,5 +1,7 @@
 const pool = require("../db/connect");
+const bcrypt = require("bcrypt");
 const supabase = require("../db/superbaseClient");
+
 class User {
   constructor(userId, email, password, name) {
     this.userId = userId;
@@ -122,33 +124,54 @@ class User {
         return callback(null, { success: false, message: "User not found" });
       }
 
-      const storedPassword = results[0].password;
+      const storedHashedPassword = results[0].password;
 
-      if (storedPassword !== currentPassword) {
-        return callback(null, {
-          success: false,
-          message: "Current password is incorrect",
-        });
-      }
-
-      const updateQuery = "UPDATE User SET password = ? WHERE userId = ?";
-
-      pool.query(updateQuery, [newPassword, userId], (err, updateResult) => {
+      // So sánh password hiện tại với hash đã lưu bằng bcrypt
+      bcrypt.compare(currentPassword, storedHashedPassword, (err, isMatch) => {
         if (err) {
-          console.error("Error updating password:", err);
+          console.error("Error comparing passwords:", err);
           return callback(err, null);
         }
 
-        if (updateResult.affectedRows === 0) {
+        if (!isMatch) {
           return callback(null, {
             success: false,
-            message: "Failed to update password",
+            message: "Current password is incorrect",
           });
         }
 
-        return callback(null, {
-          success: true,
-          message: "Password updated successfully",
+        // Hash password mới trước khi lưu
+        const saltRounds = 10;
+        bcrypt.hash(newPassword, saltRounds, (err, hashedNewPassword) => {
+          if (err) {
+            console.error("Error hashing new password:", err);
+            return callback(err, null);
+          }
+
+          const updateQuery = "UPDATE User SET password = ? WHERE userId = ?";
+
+          pool.query(
+            updateQuery,
+            [hashedNewPassword, userId],
+            (err, updateResult) => {
+              if (err) {
+                console.error("Error updating password:", err);
+                return callback(err, null);
+              }
+
+              if (updateResult.affectedRows === 0) {
+                return callback(null, {
+                  success: false,
+                  message: "Failed to update password",
+                });
+              }
+
+              return callback(null, {
+                success: true,
+                message: "Password updated successfully",
+              });
+            }
+          );
         });
       });
     });
